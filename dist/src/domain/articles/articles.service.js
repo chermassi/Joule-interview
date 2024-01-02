@@ -18,54 +18,54 @@ let ArticlesService = exports.ArticlesService = class ArticlesService {
     constructor(prisma, notificationService) {
         this.prisma = prisma;
         this.notificationService = notificationService;
-        this.create = async (article) => {
-            const createdArticle = await this.prisma.article.create({
-                data: { ...article },
-            });
-            if (createdArticle.published)
-                this.notificationService.notifyPublishedArticle(createdArticle);
-        };
-        this.publish = (id) => {
-            this.prisma.article
-                .update({
-                where: { id },
-                data: { published: true },
-            })
-                .then((article) => this.notificationService.notifyPublishedArticle(article));
-        };
-        this.findAll = async () => {
-            return await this.prisma.article.findMany({
-                where: { published: true },
-            });
-        };
-        this.findMine = (authorId) => {
-            return this.prisma.article.findMany({
-                where: { authorId },
-            });
-        };
-        this.findDrafts = (authorId) => {
-            return this.prisma.article.findMany({
-                where: { published: false, authorId },
-            });
-        };
-        this.findOne = (id) => {
-            return this.prisma.article.findUnique({ where: { id } });
-        };
-        this.update = async (id, article, userId) => {
-            const persistedArticle = await this.prisma.article.findUnique({
-                where: { id },
-            });
-            (0, rules_1.validateUserCanMutateArticle)(persistedArticle, userId);
-            return this.prisma.article.update({
-                where: { id },
-                data: article,
-            });
-        };
-        this.remove = async (id, userId) => {
-            const article = await this.prisma.article.findUnique({ where: { id } });
-            (0, rules_1.validateUserCanMutateArticle)(article, userId);
-            return this.prisma.article.delete({ where: { id } });
-        };
+    }
+    async create(article) {
+        const createdArticle = await this.prisma.article.create({
+            data: { ...article },
+        });
+        if (createdArticle.published) {
+            this.notificationService.notifyPublishedArticle(createdArticle);
+        }
+    }
+    async publish(id) {
+        const updatedArticle = await this.prisma.article.update({
+            where: { id },
+            data: { published: true },
+        });
+        this.notificationService.notifyPublishedArticle(updatedArticle);
+    }
+    async findAll() {
+        return await this.prisma.article.findMany({
+            where: { published: true },
+        });
+    }
+    async findMine(authorId) {
+        return this.prisma.article.findMany({
+            where: { authorId },
+        });
+    }
+    async findDrafts(authorId) {
+        return this.prisma.article.findMany({
+            where: { published: false, authorId },
+        });
+    }
+    async findOne(id) {
+        return this.prisma.article.findUnique({ where: { id } });
+    }
+    async update(id, article, userId) {
+        const persistedArticle = await this.prisma.article.findUnique({
+            where: { id },
+        });
+        (0, rules_1.validateUserCanMutateArticle)(persistedArticle, userId);
+        return this.prisma.article.update({
+            where: { id },
+            data: article,
+        });
+    }
+    async remove(id, userId) {
+        const article = await this.prisma.article.findUnique({ where: { id } });
+        (0, rules_1.validateUserCanMutateArticle)(article, userId);
+        return this.prisma.article.delete({ where: { id } });
     }
 };
 exports.ArticlesService = ArticlesService = __decorate([
