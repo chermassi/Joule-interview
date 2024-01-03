@@ -15,16 +15,19 @@ export class ArticleDto implements Article {
   @ApiProperty()
   authorId: number;
 
+  // Validation for title
   @ApiProperty()
   @IsNotEmpty({ message: "Title should not be empty" })
   @IsString({ message: "Title should be a string" })
   title: string;
 
+  // Validation for description
   @ApiProperty({ required: false, nullable: true })
   @IsOptional()
   @IsString({ message: "Description should be a string" })
   description: string | null;
 
+  // Validation for body
   @ApiProperty()
   @IsNotEmpty({ message: "Body should not be empty" })
   @IsString({ message: "Body should be a string" })
@@ -61,21 +64,25 @@ export class ArticleResponse implements ResponseDto<Article, ArticleDto> {
 
 export class CreateArticleDto
   implements WithOptional<MutableArticle, "description" | "published"> {
+  // Validation for title
   @ApiProperty()
   @IsNotEmpty({ message: "Title should not be empty" })
   @IsString({ message: "Title should be a string" })
   title: string;
 
+  // Validation for description
   @ApiProperty({ required: false })
   @IsOptional()
   @IsString({ message: "Description should be a string" })
   description?: string;
 
+  // Validation for body
   @ApiProperty()
   @IsNotEmpty({ message: "Body should not be empty" })
   @IsString({ message: "Body should be a string" })
   body: string;
 
+  // Validation for published
   @ApiProperty({ required: false, default: false })
   @IsOptional()
   @IsBoolean({ message: "Published should be a boolean" })
