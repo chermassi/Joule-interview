@@ -63,7 +63,7 @@ export class ArticlesController {
             this.logger.log("Fetching all articles");
             const articles = await this.articlesService.findAll();
             return articles.map((article) =>
-                new ArticleResponse(article).fromEntity(),
+                new ArticleResponse(article),
             );
         } catch (error) {
             // Log an error if there's an issue during article retrieval
@@ -111,7 +111,7 @@ export class ArticlesController {
             // Log a message when fetching a specific article by ID
             this.logger.log(`Fetching article with ID: ${id}`);
             const article = await this.articlesService.findOne(+id);
-            return new ArticleResponse(article).fromEntity();
+            return new ArticleResponse(article);
         } catch (error) {
             // Log an error if there's an issue during article retrieval
             this.logger.error(`Error fetching article: ${error.message}`);
@@ -150,7 +150,7 @@ export class ArticlesController {
                 +id,
                 request.user,
             );
-            return new ArticleResponse(deletedArticle).fromEntity();
+            return new ArticleResponse(deletedArticle)
         } catch (error) {
             // Log an error if there's an issue during article deletion
             this.logger.error(`Error deleting article: ${error.message}`);
