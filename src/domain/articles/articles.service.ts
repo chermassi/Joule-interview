@@ -4,13 +4,28 @@ import { Article, MutableArticle } from "./article.entity";
 import { validateUserCanMutateArticle } from "./rules";
 import { NotificationService } from "../notifications/notifications.service";
 import { Mutable } from "../../utils/types";
+import { CommentsService } from '../comments/comments.service';
 
 @Injectable()
 export class ArticlesService {
     constructor(
         private readonly prisma: PrismaService,
         private readonly notificationService: NotificationService,
+        private commentsService: CommentsService, // Include CommentsService
     ) {}
+    // Create comment
+    createComment = async (articleId: number, userId: number, content: string) => {
+        return this.commentsService.createComment({
+          articleId,
+          userId,
+          content,
+        });
+      };
+      
+    // Get comment by article id
+    getCommentsByArticleId = async (articleId: number) => {
+    return this.commentsService.getCommentsByArticleId(articleId);
+    };
 
     // Improved: Used async to ensure proper handling of Promises.
     async create(article: Mutable<Article>): Promise<void> {

@@ -1,3 +1,4 @@
+import { CommentsService } from '../../../domain/comments/comments.service';
 import {
     Controller,
     Get,
@@ -25,6 +26,10 @@ import {
     UpdateArticleDto,
     UpdateArticleRequest,
 } from "./article.dto";
+
+import {
+    CommentDto,
+} from "./comment.dto";
 import { JwtAuthGuard } from "../auth/auth.guard";
 
 @Controller("articles")
@@ -32,9 +37,9 @@ import { JwtAuthGuard } from "../auth/auth.guard";
 export class ArticlesController {
     // Initialize logger for this controller
     private readonly logger = new Logger(ArticlesController.name);
-
-    constructor(private readonly articlesService: ArticlesService) {}
-
+    
+    constructor(private readonly articlesService: ArticlesService, private readonly commentsService: CommentsService) {}
+    
     @UseGuards(JwtAuthGuard)
     @ApiBearerAuth()
     @Post()
@@ -157,4 +162,22 @@ export class ArticlesController {
             throw error;
         }
     }
+
+    @Post(':id/comments')
+  @ApiCreatedResponse({ type: CommentDto })
+  async createComment(
+    @Param('id') articleId: number,
+    @Body() createCommentDto: CommentDto,
+    @Request() request,
+  ) {
+    const comment = createCommentDto.toEntity();
+    const userId = request.user.id;
+    return this.articlesService.createComment(articleId, userId, comment.content);
+  }
+
+  @Get(':id/comments')
+  @ApiOkResponse({ type: CommentDto, isArray: true })
+  async getComments(@Param('id') articleId: number) {
+    return this.articlesService.getCommentsByArticleId(articleId);
+  }
 }
